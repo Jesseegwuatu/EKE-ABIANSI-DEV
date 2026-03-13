@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eke Abiansi Development Association</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#b22222',
+                        secondary: '#f5f5f5',
+                        accent: '#333333',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-in',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'slide-down': 'slideDown 0.8s ease-out',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'modal-pop': 'modalPop 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(50px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        slideDown: { '0%': { transform: 'translateY(-50px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+                        modalPop: { '0%': { transform: 'scale(0.8)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Box Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #333333;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(178, 34, 34, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(51, 51, 51, 0.03) 0%, transparent 50%);
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(178, 34, 34, 0.2);
+            border-radius: 50%;
+            animation: float-particle 20s infinite linear;
+        }
+        
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+        
+        /* Cards */
+        .glass-card {
+            background: white;
+            border: 1px solid rgba(178, 34, 34, 0.1);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 50px -20px rgba(178, 34, 34, 0.2);
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(178, 34, 34, 0.1);
+            z-index: 1000;
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Logo styling */
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: white;
+            z-index: 1001;
+            transition: left 0.3s ease;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .mobile-menu.open { left: 0; }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .menu-overlay.active { display: block; }
+        
+        /* Buttons */
+        .btn-primary {
+            background: #b22222;
+            color: white;
+            font-weight: 600;
+            padding: 0.9rem 2rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .btn-primary:hover {
+            background: #8b1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(178, 34, 34, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #b22222;
+            color: #b22222;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-outline:hover {
+            background: #b22222;
+            color: white;
+        }
+        
+        /* Hero Slideshow */
+        .hero-slide {
+            position: relative;
+            height: 500px;
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .hero-slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+        }
+        
+        .hero-slide-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero-slide-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .swiper-pagination-bullet {
+            background: white !important;
+            opacity: 0.5;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: #b22222 !important;
+            opacity: 1;
+        }
+        
+        .swiper-button-next, .swiper-button-prev {
+            color: white !important;
+            background: rgba(0,0,0,0.3);
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50%;
+        }
+        
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+            background: rgba(178, 34, 34, 0.8);
+        }
+        
+        /* Executive Card */
+        .executive-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            border: 1px solid rgba(178, 34, 34, 0.1);
+        }
+        
+        .executive-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px -15px rgba(178, 34, 34, 0.2);
+        }
+        
+        .executive-card:hover .executive-image img {
+            transform: scale(1.1);
+        }
+        
+        .executive-image {
+            height: 280px;
+            overflow: hidden;
+        }
+        
+        .executive-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        
+        .executive-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .executive-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #b22222;
+            margin-bottom: 0.5rem;
+        }
+        
+        .executive-position {
+            color: #666;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* News Card */
+        .news-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(178, 34, 34, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(178, 34, 34, 0.2);
+        }
+        
+        .news-card:hover .news-image img {
+            transform: scale(1.05);
+        }
+        
+        .news-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .news-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+        
+        .news-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: auto;
+        }
+        
+        .news-source {
+            font-weight: 600;
+            color: #b22222;
+        }
+        
+        /* Event Card */
+        .event-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(178, 34, 34, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(178, 34, 34, 0.2);
+        }
+        
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .event-date {
+            background: #b22222;
+            color: white;
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Paper Card */
+        .paper-card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(178, 34, 34, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+        
+        .paper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(178, 34, 34, 0.3);
+        }
+        
+        .paper-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Cultural Card */
+        .cultural-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(178, 34, 34, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .cultural-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(178, 34, 34, 0.2);
+        }
+        
+        /* Gallery Item */
+        .gallery-item {
+            position: relative;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: pointer;
+        }
+        
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img,
+        .gallery-item:hover video {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        .play-overlay i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        /* Full Gallery Viewer */
+        .gallery-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+        }
+        
+        .gallery-viewer.active {
+            display: block;
+        }
+        
+        .gallery-viewer .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10001;
+        }
+        
+        .viewer-swiper {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .viewer-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .viewer-slide img,
+        .viewer-slide video {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .success-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalPop 0.3s ease-out;
+            border: 2px solid #b22222;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+            animation: bounce-slow 2s infinite;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #b22222;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-message {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f5f5f5;
+            border-top: 4px solid #b22222;
+            border-right: 4px solid #b22222;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Section Styles */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #b22222;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+        
+        .gold-border {
+            width: 80px;
+            height: 4px;
+            background: #b22222;
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .section-title { font-size: 2rem; }
+            .hero-slide { height: 400px; }
+            .hero-slide-title { font-size: 1.5rem; }
+            .logo-img { height: 40px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-gradient"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+    
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-text text-primary font-semibold mt-4">Eke Abiansi</div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <i class='bx bx-check-circle success-icon'></i>
+            <h3 class="modal-title">Thank You!</h3>
+            <p class="modal-message">Your message has been sent successfully. We'll get back to you soon.</p>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-btn text-3xl text-primary cursor-pointer mb-8" onclick="closeMenu()">
+            <i class='bx bx-x'></i>
+        </div>
+        
+        <div class="mb-8 text-center">
+            <img src="Logo_2.jpg" alt="Eke Abiansi Logo" class="max-w-full h-auto mx-auto mb-4" style="max-height: 80px;">
+        </div>
+        
+        <nav class="space-y-4">
+            <a href="#home" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Home</a>
+            <a href="#about" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">About</a>
+            <a href="#executives" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Executives</a>
+            <a href="#news" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">News</a>
+            <a href="#events" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Events</a>
+            <a href="#cultural" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Cultural</a>
+            <a href="#papers" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Papers</a>
+            <a href="#gallery" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Gallery</a>
+            <a href="#donate" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Donate</a>
+            <a href="#contact" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Contact</a>
+        </nav>
+        
+        <div class="mt-8 pt-8 border-t">
+            <a href="admin-executives.html" class="btn-outline w-full text-center block">Admin</a>
+        </div>
+    </div>
+    
+    <!-- NAVBAR -->
+    <nav class="navbar fixed w-full z-50 px-6 py-4" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="logo-container">
+                <img src="Logo_2.jpg" alt="Eke Abiansi" class="logo-img">
+            </div>
+            
+            <div class="hidden md:flex gap-8 text-sm font-medium">
+                <a href="#home" class="hover:text-primary transition">Home</a>
+                <a href="#about" class="hover:text-primary transition">About</a>
+                <a href="#executives" class="hover:text-primary transition">Executives</a>
+                <a href="#news" class="hover:text-primary transition">News</a>
+                <a href="#events" class="hover:text-primary transition">Events</a>
+                <a href="#cultural" class="hover:text-primary transition">Cultural</a>
+                <a href="#papers" class="hover:text-primary transition">Papers</a>
+                <a href="#gallery" class="hover:text-primary transition">Gallery</a>
+                <a href="#donate" class="hover:text-primary transition">Donate</a>
+                <a href="#contact" class="hover:text-primary transition">Contact</a>
+            </div>
+            
+            <div class="flex gap-3">
+                <a href="admin-executives.html" class="btn-outline text-sm py-2 px-4 hidden md:block">Admin</a>
+                <button class="md:hidden text-2xl text-primary" onclick="toggleMenu()">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- HERO SLIDESHOW SECTION -->
+    <section id="home" class="pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="swiper heroSwiper">
+                <div class="swiper-wrapper">
+                    <!-- Slide 1: Welcome -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="community.jpg" alt="Eke Community">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Welcome to Eke Abiansi</h2>
+                                <p class="hero-slide-text">A community united in purpose, preserving our heritage while building a brighter future.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 2: Mission -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="civil.png" alt="Community Gathering">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Our Mission</h2>
+                                <p class="hero-slide-text">Promoting and cultivating civic responsibility within Enugu State and elsewhere.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 3: History -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="history.png" alt="Cultural Heritage">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Rich History</h2>
+                                <p class="hero-slide-text">Founded in the 12th century, Eke is one of the twenty-five communities in Udi LGA.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 4: Five Villages -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="villages.jpg" alt="Eke Villages">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Five Villages United</h2>
+                                <p class="hero-slide-text">Amofia, Amankwo, Oma, Enugu, and Ogui - our five villages.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 5: Cultural Traditions -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="cultural.png" alt="Cultural Festival">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Cultural Traditions</h2>
+                                <p class="hero-slide-text">Celebrating festivals that mark the seasons of the lunar year.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 6: Community Development -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="comdev.jpg" alt="Development">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Community Development</h2>
+                                <p class="hero-slide-text">Working together to advance our community.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 7: Medical Missions -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="med.jpg" alt="Medical Mission">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Medical Missions</h2>
+                                <p class="hero-slide-text">Providing healthcare services to our community.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 8: Unity -->
+                    <div class="swiper-slide">
+                        <div class="hero-slide">
+                            <img src="ppl1.jpg" alt="Community Unity">
+                            <div class="hero-slide-content">
+                                <h2 class="hero-slide-title">Together We Thrive</h2>
+                                <p class="hero-slide-text">Building a stronger community for generations to come.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 px-6 bg-secondary">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">About Eke Abiansi</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Preserving our heritage, building our future</p>
+            
+            <div class="grid md:grid-cols-2 gap-12 mt-16">
+                <div class="glass-card p-8" data-aos="fade-right">
+                    <i class='bx bx-history text-5xl text-primary mb-6'></i>
+                    <h3 class="text-2xl font-bold text-primary mb-4">Our History</h3>
+                    <p class="text-gray-600 leading-relaxed">Eke is one of the most prominent of the twenty-five communities in Udi Local Government Area of Enugu State. Eke lies about 16 miles west of Enugu, bordered by Ngwo, Oghe, Ebe, Nsude and Imezi Owa.</p>
+                </div>
+                
+                <div class="glass-card p-8" data-aos="fade-left">
+                    <i class='bx bx-group text-5xl text-primary mb-6'></i>
+                    <h3 class="text-2xl font-bold text-primary mb-4">Our Mission</h3>
+                    <p class="text-gray-600 leading-relaxed">To serve as a voice for the Eke community by empowering a cohesive network of professionals for professional excellence and community advancement.</p>
+                </div>
+            </div>
+            
+            <!-- Core Values -->
+            <div class="grid md:grid-cols-4 gap-6 mt-12">
+                <div class="cultural-card text-center" data-aos="zoom-in">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class='bx bx-shield-quarter text-3xl text-primary'></i>
+                    </div>
+                    <h4 class="font-bold text-primary text-lg mb-2">Unity</h4>
+                    <p class="text-gray-500 text-sm">Strong bonds among our five villages</p>
+                </div>
+                <div class="cultural-card text-center" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class='bx bx-history text-3xl text-primary'></i>
+                    </div>
+                    <h4 class="font-bold text-primary text-lg mb-2">Heritage</h4>
+                    <p class="text-gray-500 text-sm">Preserving our rich cultural traditions</p>
+                </div>
+                <div class="cultural-card text-center" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class='bx bx-trending-up text-3xl text-primary'></i>
+                    </div>
+                    <h4 class="font-bold text-primary text-lg mb-2">Progress</h4>
+                    <p class="text-gray-500 text-sm">Advancing our community together</p>
+                </div>
+                <div class="cultural-card text-center" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class='bx bx-heart text-3xl text-primary'></i>
+                    </div>
+                    <h4 class="font-bold text-primary text-lg mb-2">Service</h4>
+                    <p class="text-gray-500 text-sm">Serving our people with dedication</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- EXECUTIVES SECTION (Real-time) -->
+    <section id="executives" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Our Executives</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">Meet the leaders guiding our community</p>
+            <div id="executivesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"></div>
+        </div>
+    </section>
+    
+    <!-- NEWS SECTION -->
+    <section id="news" class="py-24 px-6 bg-secondary">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Nigerian News</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">Stay informed with the latest from Nigeria</p>
+            <div id="newsFeed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"></div>
+        </div>
+    </section>
+    
+    <!-- CULTURAL HISTORY SECTION -->
+    <section id="cultural" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Eke Cultural History</h2>
+            <div class="gold-border"></div>
+            <div class="grid md:grid-cols-2 gap-8 mt-16">
+                <div class="cultural-card" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-primary mb-4">Origins of Eke</h3>
+                    <p class="text-gray-600 leading-relaxed">The modern day Eke community originated from one of the three children of Oshie Anugwu, who lived in the early to mid 12th century AD.</p>
+                </div>
+                <div class="cultural-card" data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-primary mb-4">The Five Villages</h3>
+                    <p class="text-gray-600 leading-relaxed">Amofia Eke, Amankwo Eke, Oma Eke, Enugu Eke and Ogui Eke - the five villages of our community.</p>
+                </div>
+                <div class="cultural-card" data-aos="fade-right" data-aos-delay="200">
+                    <h3 class="text-2xl font-bold text-primary mb-4">Cultural Traditions</h3>
+                    <p class="text-gray-600 leading-relaxed">Celebrating festivals that mark the various seasons of the lunar year, preserving our rich heritage.</p>
+                </div>
+                <div class="cultural-card" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="text-2xl font-bold text-primary mb-4">Kinship & Unity</h3>
+                    <p class="text-gray-600 leading-relaxed">A mutual defense pact signed by all Oshie sibling families binds us together in unity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- EVENTS SECTION (Real-time) -->
+    <section id="events" class="py-24 px-6 bg-secondary">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Upcoming Events</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">Join us at our community gatherings</p>
+            <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16"></div>
+        </div>
+    </section>
+    
+    <!-- PAPERS OF THE WEEK SECTION (Real-time) -->
+    <section id="papers" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Papers of the Week</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">Important documents and publications</p>
+            <div id="papersGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16"></div>
+        </div>
+    </section>
+    
+    <!-- GALLERY SECTION (Real-time) -->
+    <section id="gallery" class="py-24 px-6 bg-secondary">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Community Gallery</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">Capturing moments from our events</p>
+            <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16"></div>
+            <div class="text-center mt-8">
+                <button onclick="openFullGallery()" class="btn-primary">Open Full Gallery</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- DONATE SECTION -->
+    <section id="donate" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-12 text-center" data-aos="zoom-in">
+                <i class='bx bx-heart text-6xl text-primary mb-6'></i>
+                <h2 class="text-4xl font-bold text-primary mb-4">Support Our Community</h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-8">Your donations help us organize events, support community projects, and preserve our cultural heritage for future generations.</p>
+                <a href="donate.html" class="btn-primary text-xl px-12 py-4">Donate Now <i class='bx bx-right-arrow-alt ml-2'></i></a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-24 px-6 bg-secondary">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title" data-aos="fade-up">Get In Touch</h2>
+            <div class="gold-border"></div>
+            <p class="section-subtitle" data-aos="fade-up">We'd love to hear from you</p>
+            
+            <div class="grid md:grid-cols-2 gap-12 mt-16">
+                <div class="glass-card p-8" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-primary mb-6">Contact Information</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class='bx bx-map text-2xl text-primary'></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Address</h4>
+                                <p class="text-gray-600">Eke, Udi LGA, Enugu State, Nigeria</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class='bx bx-envelope text-2xl text-primary'></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Email</h4>
+                                <p class="text-gray-600">info@eke-abiansi.org</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class='bx bx-phone text-2xl text-primary'></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-primary">Phone</h4>
+                                <p class="text-gray-600">+234 (0) 123 456 7890</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-8" data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-primary mb-6">Send a Message</h3>
+                    
+                    <form id="contactForm" class="space-y-4">
+                        <input type="text" id="contactName" name="name" placeholder="Your Name" required
+                               class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primary">
+                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required
+                               class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primary">
+                        <input type="text" id="contactSubject" name="subject" placeholder="Subject"
+                               class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primary">
+                        <textarea id="contactMessage" name="message" rows="4" placeholder="Your Message" required
+                                  class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primary"></textarea>
+                        <button type="submit" class="btn-primary w-full">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FULL GALLERY VIEWER -->
+    <div class="gallery-viewer" id="galleryViewer">
+        <div class="close-btn" onclick="closeFullGallery()"><i class='bx bx-x'></i></div>
+        <div class="swiper viewerSwiper">
+            <div class="swiper-wrapper" id="viewerSlides"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <footer class="bg-primary text-white py-12 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <img src="Logo_2.jpg" alt="Eke Abiansi" class="h-12 w-auto mx-auto mb-4">
+            <p>© 2026 Eke Abiansi Development Association. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Firebase Module - ULTIMATE FIX -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+        
+        // ============================================
+        // FIREBASE CONFIG
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWwZ2fZeu0bbkTXnw4h42d6WDV8NffBEY",
+            authDomain: "eke-abiansi-dev.firebaseapp.com",
+            databaseURL: "https://eke-abiansi-dev-default-rtdb.firebaseio.com",
+            projectId: "eke-abiansi-dev",
+            storageBucket: "eke-abiansi-dev.firebasestorage.app",
+            messagingSenderId: "1014611002869",
+            appId: "1:1014611002869:web:c33bcf7e03d4a4e2168cbc"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // GNews API Key
+        const GNEWS_API_KEY = 'da3d7030697818525587700d8da60a52';
+        
+        // DOM Elements
+        const loader = document.getElementById('loader');
+        const executivesGrid = document.getElementById('executivesGrid');
+        const newsFeed = document.getElementById('newsFeed');
+        const eventsGrid = document.getElementById('eventsGrid');
+        const papersGrid = document.getElementById('papersGrid');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const viewerSlides = document.getElementById('viewerSlides');
+        const successModal = document.getElementById('successModal');
+        
+        // State
+        let allGalleryItems = [];
+        
+        // Hide loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1500);
+        });
+        
+        // Show success modal
+        function showSuccessModal() {
+            successModal.classList.add('active');
+            setTimeout(() => {
+                successModal.classList.remove('active');
+            }, 2000);
+        }
+        
+        // ============================================
+        // LOAD EXECUTIVES - FIXED TO SHOW ALL
+        // ============================================
+        const executivesRef = ref(db, 'executives');
+        onValue(executivesRef, (snapshot) => {
+            console.log('🔥 Executives data received:', snapshot.val());
+            
+            if (snapshot.exists()) {
+                const executives = [];
+                snapshot.forEach(child => {
+                    executives.push(child.val());
+                });
+                
+                console.log(`✅ Found ${executives.length} executives`);
+                
+                // Sort by order
+                executives.sort((a, b) => (a.order || 999) - (b.order || 999));
+                
+                if (executives.length > 0) {
+                    executivesGrid.innerHTML = executives.map(exec => `
+                        <div class="executive-card" data-aos="fade-up">
+                            <div class="executive-image">
+                                <img src="${exec.photoURL}" alt="${exec.name}">
+                            </div>
+                            <div class="executive-info">
+                                <h3 class="executive-name">${exec.name}</h3>
+                                <p class="executive-position">${exec.position}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    executivesGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No executives added yet.</div>';
+                }
+            } else {
+                console.log('📭 No executives found');
+                executivesGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No executives added yet.</div>';
+            }
+        }, (error) => {
+            console.error('❌ Executives error:', error);
+            executivesGrid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error loading executives.</div>';
+        });
+        
+        // ============================================
+        // LOAD NEWS (Static)
+        // ============================================
+        async function loadNews() {
+            try {
+                const response = await fetch(`https://gnews.io/api/v4/top-headlines?country=ng&lang=en&max=12&apikey=${GNEWS_API_KEY}`);
+                const data = await response.json();
+                
+                if (data.articles && data.articles.length > 0) {
+                    newsFeed.innerHTML = data.articles.map(article => `
+                        <div class="news-card" data-aos="fade-up">
+                            <div class="news-image">
+                                <img src="${article.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'}" alt="${article.title}">
+                            </div>
+                            <div class="news-content">
+                                <h3 class="news-title">${article.title}</h3>
+                                <p class="news-description">${article.description || ''}</p>
+                                <div class="news-meta">
+                                    <span class="news-source">${article.source.name}</span>
+                                    <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
+                                </div>
+                                <a href="${article.url}" target="_blank" class="text-primary hover:underline text-sm mt-4 inline-block">Read More →</a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+            }
+        }
+        loadNews();
+        
+        // ============================================
+        // LOAD EVENTS - FIXED TO SHOW ALL
+        // ============================================
+        const eventsRef = ref(db, 'events');
+        onValue(eventsRef, (snapshot) => {
+            console.log('🔥 Events data received:', snapshot.val());
+            
+            if (snapshot.exists()) {
+                const events = [];
+                snapshot.forEach(child => {
+                    events.push(child.val());
+                });
+                
+                console.log(`✅ Found ${events.length} events`);
+                
+                // Sort by date
+                events.sort((a, b) => (a.date || 0) - (b.date || 0));
+                
+                if (events.length > 0) {
+                    eventsGrid.innerHTML = events.map(event => `
+                        <div class="event-card" data-aos="fade-up">
+                            ${event.image ? `<img src="${event.image}" class="event-image" alt="${event.title}">` : ''}
+                            <span class="event-date">${event.date ? new Date(event.date).toLocaleDateString() : 'Date TBA'}</span>
+                            <h3 class="text-xl font-bold text-primary mb-2">${event.title}</h3>
+                            <p class="text-gray-600 mb-2">${event.description}</p>
+                            <p class="text-sm text-gray-500">${event.venue}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    eventsGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No events yet.</div>';
+                }
+            } else {
+                console.log('📭 No events found');
+                eventsGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No events yet.</div>';
+            }
+        }, (error) => {
+            console.error('❌ Events error:', error);
+            eventsGrid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error loading events.</div>';
+        });
+        
+        // ============================================
+        // LOAD PAPERS - FIXED TO SHOW ALL
+        // ============================================
+        const papersRef = ref(db, 'papers');
+        onValue(papersRef, (snapshot) => {
+            console.log('🔥 Papers data received:', snapshot.val());
+            
+            if (snapshot.exists()) {
+                const papers = [];
+                snapshot.forEach(child => {
+                    papers.push(child.val());
+                });
+                
+                console.log(`✅ Found ${papers.length} papers`);
+                
+                // Sort by newest first
+                papers.sort((a, b) => b.timestamp - a.timestamp);
+                
+                if (papers.length > 0) {
+                    papersGrid.innerHTML = papers.map(paper => `
+                        <div class="paper-card" onclick="window.open('${paper.imageUrl}', '_blank')">
+                            <img src="${paper.imageUrl}" alt="Paper of the week">
+                        </div>
+                    `).join('');
+                } else {
+                    papersGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No papers uploaded yet.</div>';
+                }
+            } else {
+                console.log('📭 No papers found');
+                papersGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No papers uploaded yet.</div>';
+            }
+        }, (error) => {
+            console.error('❌ Papers error:', error);
+            papersGrid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error loading papers.</div>';
+        });
+        
+        // ============================================
+        // LOAD GALLERY - FIXED TO SHOW ALL
+        // ============================================
+        const galleryRef = ref(db, 'gallery');
+        onValue(galleryRef, (snapshot) => {
+            console.log('🔥 Gallery data received:', snapshot.val());
+            
+            if (snapshot.exists()) {
+                const items = [];
+                snapshot.forEach(child => {
+                    items.push(child.val());
+                });
+                
+                console.log(`✅ Found ${items.length} gallery items`);
+                
+                // Sort by newest first
+                items.sort((a, b) => b.timestamp - a.timestamp);
+                allGalleryItems = items;
+                
+                if (items.length > 0) {
+                    const displayItems = items.slice(0, 6);
+                    galleryGrid.innerHTML = displayItems.map((item, index) => `
+                        <div class="gallery-item" onclick="openGalleryViewer(${index})">
+                            ${item.type === 'video' ? `
+                                <video src="${item.videoUrl}" muted></video>
+                                <div class="play-overlay"><i class='bx bx-play-circle'></i></div>
+                            ` : `
+                                <img src="${item.imageUrl}" alt="${item.caption || ''}">
+                            `}
+                        </div>
+                    `).join('');
+                } else {
+                    galleryGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No images in gallery yet.</div>';
+                }
+            } else {
+                console.log('📭 No gallery items found');
+                galleryGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No images in gallery yet.</div>';
+            }
+        }, (error) => {
+            console.error('❌ Gallery error:', error);
+            galleryGrid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error loading gallery.</div>';
+        });
+        
+        // ============================================
+        // GALLERY VIEWER FUNCTIONS
+        // ============================================
+        window.openFullGallery = function() {
+            if (allGalleryItems.length === 0) return;
+            
+            document.getElementById('galleryViewer').classList.add('active');
+            
+            viewerSlides.innerHTML = allGalleryItems.map(item => `
+                <div class="swiper-slide viewer-slide">
+                    ${item.type === 'video' ? `
+                        <video src="${item.videoUrl}" controls></video>
+                    ` : `
+                        <img src="${item.imageUrl}" alt="${item.caption || ''}">
+                    `}
+                </div>
+            `).join('');
+            
+            new Swiper('.viewerSwiper', {
+                loop: true,
+                pagination: { el: '.swiper-pagination', clickable: true },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+            });
+        };
+        
+        window.closeFullGallery = function() {
+            document.getElementById('galleryViewer').classList.remove('active');
+        };
+        
+        window.openGalleryViewer = function(index) {
+            openFullGallery();
+            setTimeout(() => {
+                const swiper = document.querySelector('.viewerSwiper').swiper;
+                if (swiper) swiper.slideTo(index, 0);
+            }, 100);
+        };
+        
+        // ============================================
+        // CONTACT FORM HANDLER
+        // ============================================
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const formData = new FormData(form);
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('https://formspree.io/f/xnjgveqo', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    showSuccessModal();
+                    form.reset();
+                } else {
+                    alert('Error sending message. Please try again.');
+                }
+            } catch (error) {
+                alert('Error sending message. Please check your connection.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+    
+    <!-- AOS and Swiper Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+        
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+        
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.add('open');
+            document.getElementById('menuOverlay').classList.add('active');
+        }
+        
+        function closeMenu() {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('menuOverlay').classList.remove('active');
+        }
+        
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        
+        new Swiper('.heroSwiper', {
+            loop: true,
+            autoplay: { delay: 3000 },
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            effect: 'fade',
+            fadeEffect: { crossFade: true }
+        });
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    closeMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
