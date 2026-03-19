@@ -25,6 +25,8 @@
                         'bounce-slow': 'bounce 3s infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'modal-pop': 'modalPop 0.3s ease-out',
+                        'slide-in-right': 'slideInRight 0.5s ease-out',
+                        'slide-out-right': 'slideOutRight 0.5s ease-out',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
@@ -32,6 +34,8 @@
                         slideDown: { '0%': { transform: 'translateY(-50px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
                         modalPop: { '0%': { transform: 'scale(0.8)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        slideInRight: { '0%': { transform: 'translateX(100%)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideOutRight: { '0%': { transform: 'translateX(0)', opacity: '1' }, '100%': { transform: 'translateX(100%)', opacity: '0' } },
                     },
                 }
             }
@@ -609,6 +613,99 @@
             font-size: 1rem;
         }
         
+        /* Announcement Popup */
+        .announcement-popup {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            max-width: 350px;
+            width: 90%;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            z-index: 10001;
+            border: 2px solid #b22222;
+            animation: slideInRight 0.5s ease-out;
+            display: none;
+        }
+        
+        .announcement-popup.show {
+            display: block;
+        }
+        
+        .announcement-popup.hide {
+            animation: slideOutRight 0.5s ease-out forwards;
+        }
+        
+        .popup-header {
+            background: #b22222;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.8rem 0.8rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .popup-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .popup-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .popup-body {
+            padding: 1rem;
+        }
+        
+        .popup-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .popup-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #b22222;
+            margin-bottom: 0.5rem;
+        }
+        
+        .popup-from {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .popup-preview {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .popup-readmore {
+            display: inline-block;
+            background: #b22222;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .popup-readmore:hover {
+            background: #8b1a1a;
+        }
+        
         /* Loader */
         #loader {
             position: fixed;
@@ -669,6 +766,11 @@
             .hero-slide { height: 400px; }
             .hero-slide-title { font-size: 1.5rem; }
             .logo-img { height: 40px; }
+            .announcement-popup {
+                top: 80px;
+                right: 10px;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -696,6 +798,17 @@
         </div>
     </div>
     
+    <!-- Announcement Popup -->
+    <div class="announcement-popup" id="announcementPopup">
+        <div class="popup-header">
+            <h3><i class='bx bx-megaphone mr-2'></i> Announcement</h3>
+            <span class="popup-close" onclick="closeAnnouncementPopup()">&times;</span>
+        </div>
+        <div class="popup-body" id="popupBody">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+    
     <!-- Mobile Menu Overlay -->
     <div class="menu-overlay" id="menuOverlay"></div>
     
@@ -714,6 +827,7 @@
             <a href="#about" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">About</a>
             <a href="#executives" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Executives</a>
             <a href="#news" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">News</a>
+            <a href="announcements.html" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Announcements</a>
             <a href="#events" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Events</a>
             <a href="#cultural" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Cultural</a>
             <a href="#papers" onclick="closeMenu()" class="block py-2 px-4 hover:bg-primary/5 rounded-lg transition">Papers</a>
@@ -739,6 +853,7 @@
                 <a href="#about" class="hover:text-primary transition">About</a>
                 <a href="#executives" class="hover:text-primary transition">Executives</a>
                 <a href="#news" class="hover:text-primary transition">News</a>
+                <a href="announcements.html" class="hover:text-primary transition">Announcements</a>
                 <a href="#events" class="hover:text-primary transition">Events</a>
                 <a href="#cultural" class="hover:text-primary transition">Cultural</a>
                 <a href="#papers" class="hover:text-primary transition">Papers</a>
@@ -961,7 +1076,7 @@ We are determined to raise capital to help address the myriad of socio-economic 
         </div>
     </section>
     
-    <!-- EVENTS SECTION (Real-time) -->
+    <!-- EVENTS SECTION (Real-time - NEWEST FIRST) -->
     <section id="events" class="py-24 px-6 bg-secondary">
         <div class="max-w-7xl mx-auto">
             <h2 class="section-title" data-aos="fade-up">Events</h2>
@@ -1109,9 +1224,12 @@ We are determined to raise capital to help address the myriad of socio-economic 
         const galleryGrid = document.getElementById('galleryGrid');
         const viewerSlides = document.getElementById('viewerSlides');
         const successModal = document.getElementById('successModal');
+        const announcementPopup = document.getElementById('announcementPopup');
+        const popupBody = document.getElementById('popupBody');
         
         // State
         let allGalleryItems = [];
+        let popupTimeout;
         
         // Hide loader
         window.addEventListener('load', () => {
@@ -1131,8 +1249,66 @@ We are determined to raise capital to help address the myriad of socio-economic 
             }, 2000);
         }
         
+        // Close announcement popup
+        window.closeAnnouncementPopup = function() {
+            announcementPopup.classList.add('hide');
+            setTimeout(() => {
+                announcementPopup.classList.remove('show', 'hide');
+            }, 500);
+        };
+        
         // ============================================
-        // LOAD EXECUTIVES - FIXED TO SHOW ALL
+        // LOAD ANNOUNCEMENTS FOR POPUP
+        // ============================================
+        const announcementsRef = ref(db, 'announcements');
+        onValue(announcementsRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const announcements = [];
+                snapshot.forEach(child => {
+                    announcements.push({ id: child.key, ...child.val() });
+                });
+                
+                // Sort by newest first
+                announcements.sort((a, b) => b.timestamp - a.timestamp);
+                
+                // Check for announcements less than 24 hours old
+                const now = Date.now();
+                const oneDay = 24 * 60 * 60 * 1000;
+                const recentAnnouncements = announcements.filter(a => (now - a.timestamp) < oneDay);
+                
+                if (recentAnnouncements.length > 0) {
+                    // Show the most recent announcement
+                    const latest = recentAnnouncements[0];
+                    
+                    // Clear any existing timeout
+                    if (popupTimeout) clearTimeout(popupTimeout);
+                    
+                    // Prepare popup content
+                    const preview = latest.content.length > 100 
+                        ? latest.content.substring(0, 100) + '...' 
+                        : latest.content;
+                    
+                    popupBody.innerHTML = `
+                        ${latest.image ? `<img src="${latest.image}" class="popup-image" alt="Announcement">` : ''}
+                        <h4 class="popup-title">${latest.title}</h4>
+                        ${latest.from ? `<p class="popup-from">From: ${latest.from}</p>` : ''}
+                        <p class="popup-preview">${preview}</p>
+                        <a href="announcements.html?id=${latest.id}" class="popup-readmore">Read More →</a>
+                    `;
+                    
+                    // Show popup
+                    announcementPopup.classList.add('show');
+                    
+                    // Auto hide after 10 seconds
+                    popupTimeout = setTimeout(() => {
+                        closeAnnouncementPopup();
+                    }, 10000);
+                }
+            }
+        });
+        
+        // ============================================
+        // LOAD EXECUTIVES
         // ============================================
         const executivesRef = ref(db, 'executives');
         onValue(executivesRef, (snapshot) => {
@@ -1206,7 +1382,7 @@ We are determined to raise capital to help address the myriad of socio-economic 
         loadNews();
         
         // ============================================
-        // LOAD EVENTS - FIXED TO SHOW ALL
+        // LOAD EVENTS - NEWEST FIRST
         // ============================================
         const eventsRef = ref(db, 'events');
         onValue(eventsRef, (snapshot) => {
@@ -1220,8 +1396,8 @@ We are determined to raise capital to help address the myriad of socio-economic 
                 
                 console.log(`✅ Found ${events.length} events`);
                 
-                // Sort by date
-                events.sort((a, b) => (a.date || 0) - (b.date || 0));
+                // Sort by newest first (descending date)
+                events.sort((a, b) => (b.date || 0) - (a.date || 0));
                 
                 if (events.length > 0) {
                     eventsGrid.innerHTML = events.map(event => `
@@ -1246,7 +1422,7 @@ We are determined to raise capital to help address the myriad of socio-economic 
         });
         
         // ============================================
-        // LOAD PAPERS - FIXED TO SHOW ALL
+        // LOAD PAPERS
         // ============================================
         const papersRef = ref(db, 'papers');
         onValue(papersRef, (snapshot) => {
@@ -1282,7 +1458,7 @@ We are determined to raise capital to help address the myriad of socio-economic 
         });
         
         // ============================================
-        // LOAD GALLERY - FIXED TO SHOW ALL
+        // LOAD GALLERY
         // ============================================
         const galleryRef = ref(db, 'gallery');
         onValue(galleryRef, (snapshot) => {
@@ -1420,9 +1596,10 @@ We are determined to raise capital to help address the myriad of socio-economic 
         
         document.getElementById('menuOverlay').addEventListener('click', closeMenu);
         
+        // Hero Swiper with 4 seconds delay
         new Swiper('.heroSwiper', {
             loop: true,
-            autoplay: { delay: 3000 },
+            autoplay: { delay: 4000 }, // Changed to 4 seconds
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
             effect: 'fade',
