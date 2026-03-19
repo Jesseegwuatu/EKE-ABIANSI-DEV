@@ -62,6 +62,24 @@
             box-shadow: 0 10px 25px rgba(178, 34, 34, 0.3);
         }
         
+        .btn-success {
+            background: #10b981;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
         .btn-danger {
             background: #dc2626;
             color: white;
@@ -76,6 +94,8 @@
         
         .btn-danger:hover {
             background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
         }
         
         .btn-outline {
@@ -247,6 +267,73 @@
             margin-bottom: 1rem;
         }
         
+        /* Edit Modal */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300000;
+        }
+        
+        .edit-modal.active {
+            display: flex;
+        }
+        
+        .edit-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid #b22222;
+        }
+        
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .edit-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #b22222;
+            margin: 0;
+        }
+        
+        .edit-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        .edit-close:hover {
+            color: #b22222;
+        }
+        
+        .edit-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 3px solid #b22222;
+        }
+        
         /* Tabs */
         .tab-button {
             padding: 0.75rem 1.5rem;
@@ -286,7 +373,7 @@
             object-fit: cover;
         }
         
-        .event-card, .paper-card, .gallery-item {
+        .event-card, .paper-card, .gallery-item, .announcement-card {
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 0.75rem;
@@ -314,6 +401,18 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        .announcement-card {
+            padding: 1rem;
+        }
+        
+        .announcement-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         
         .gallery-item {
@@ -434,6 +533,11 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -465,6 +569,56 @@
         </div>
     </div>
     
+    <!-- Edit Executive Modal -->
+    <div class="edit-modal" id="editExecutiveModal">
+        <div class="edit-card">
+            <div class="edit-header">
+                <h3>Edit Executive</h3>
+                <span class="edit-close" onclick="closeEditModal()">&times;</span>
+            </div>
+            
+            <img id="editPreviewImage" src="" alt="Preview" class="edit-preview">
+            
+            <input type="hidden" id="editExecutiveId">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Full Name *</label>
+                <input type="text" id="editExecName" placeholder="e.g., ENG. TOCHI AMADIFE">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Position *</label>
+                <input type="text" id="editExecPosition" placeholder="e.g., President">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Order (1 = President) *</label>
+                <input type="number" id="editExecOrder" placeholder="1" min="1">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Bio (Optional)</label>
+                <textarea id="editExecBio" rows="3" placeholder="Brief description..."></textarea>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">New Photo (Optional)</label>
+                <div class="file-input-container">
+                    <input type="file" id="editExecPhoto" accept="image/*" class="file-input" onchange="previewEditImage(this)">
+                    <div class="file-label" id="editExecPhotoLabel">
+                        <i class='bx bx-image-add'></i>
+                        <span>Choose New Image</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="updateExecutive()" class="btn-primary flex-1">Update Executive</button>
+                <button onclick="closeEditModal()" class="btn-outline flex-1">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Toast Container -->
     <div id="toastContainer"></div>
     
@@ -477,7 +631,7 @@
                     <img src="Logo_2.jpg" alt="Eke Abiansi" class="logo-img">
                     <div>
                         <h1 class="text-3xl font-bold text-[#b22222]">Admin Panel</h1>
-                        <p class="text-gray-600">Manage Executives, Events, Papers & Gallery</p>
+                        <p class="text-gray-600">Manage Executives, Announcements, Events, Papers & Gallery</p>
                     </div>
                 </div>
                 <div class="flex gap-3">
@@ -487,14 +641,15 @@
             </div>
             
             <!-- Tabs -->
-            <div class="flex gap-2 mb-8">
+            <div class="flex flex-wrap gap-2 mb-8">
                 <button class="tab-button active" onclick="switchTab('executives')" id="tabExecutives">Executives</button>
+                <button class="tab-button" onclick="switchTab('announcements')" id="tabAnnouncements">Announcements</button>
                 <button class="tab-button" onclick="switchTab('events')" id="tabEvents">Events</button>
                 <button class="tab-button" onclick="switchTab('papers')" id="tabPapers">Papers</button>
                 <button class="tab-button" onclick="switchTab('gallery')" id="tabGallery">Gallery</button>
             </div>
             
-            <!-- EXECUTIVES TAB -->
+            <!-- EXECUTIVES TAB (with Edit buttons) -->
             <div id="executivesTab" class="tab-content active">
                 <div class="glass-card p-6 mb-8">
                     <h2 class="section-title">Add New Executive</h2>
@@ -534,6 +689,48 @@
                 <div class="glass-card p-6">
                     <h2 class="section-title">Current Executives</h2>
                     <div id="executivesList"></div>
+                </div>
+            </div>
+            
+            <!-- ANNOUNCEMENTS TAB (New) -->
+            <div id="announcementsTab" class="tab-content">
+                <div class="glass-card p-6 mb-8">
+                    <h2 class="section-title">Create New Announcement</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium mb-2">Title *</label>
+                            <input type="text" id="announcementTitle" placeholder="e.g., Community Meeting Update">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">From (Optional)</label>
+                            <input type="text" id="announcementFrom" placeholder="e.g., President, Secretary, etc.">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Image (Optional)</label>
+                            <div class="file-input-container">
+                                <input type="file" id="announcementImage" accept="image/*" class="file-input" onchange="updateFileName(this, 'announcementImageLabel')">
+                                <div class="file-label" id="announcementImageLabel">
+                                    <i class='bx bx-image-add'></i>
+                                    <span>Choose Image</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium mb-2">Announcement Content *</label>
+                            <textarea id="announcementContent" rows="5" placeholder="Write your announcement here..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <button onclick="addAnnouncement()" class="btn-primary">Create Announcement</button>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h2 class="section-title">Recent Announcements</h2>
+                    <div id="announcementsList" class="grid-container"></div>
                 </div>
             </div>
             
@@ -662,6 +859,7 @@
             set,
             push,
             remove,
+            update,
             onValue
         } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
         
@@ -691,6 +889,7 @@
         // ============================================
         let allData = {
             executives: [],
+            announcements: [],
             events: [],
             papers: [],
             gallery: []
@@ -730,7 +929,7 @@
         }
         
         // ============================================
-        // REAL-TIME LISTENERS (THIS IS THE KEY FIX!)
+        // REAL-TIME LISTENERS
         // ============================================
         function setupRealtimeListeners() {
             // Listen to executives
@@ -742,6 +941,17 @@
                     });
                 }
                 renderExecutives();
+            });
+            
+            // Listen to announcements
+            onValue(ref(db, 'announcements'), (snapshot) => {
+                allData.announcements = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        allData.announcements.push({ id: child.key, ...child.val() });
+                    });
+                }
+                renderAnnouncements();
             });
             
             // Listen to events
@@ -800,9 +1010,43 @@
                         <p class="text-sm text-gray-500">${exec.position} • Order: ${exec.order}</p>
                         ${exec.bio ? `<p class="text-xs text-gray-400 mt-1">${exec.bio}</p>` : ''}
                     </div>
-                    <button onclick="deleteItem('executives', '${exec.id}')" class="btn-danger">
-                        Delete
-                    </button>
+                    <div class="action-buttons">
+                        <button onclick="openEditModal('${exec.id}')" class="btn-success">
+                            <i class='bx bx-edit'></i> Edit
+                        </button>
+                        <button onclick="deleteItem('executives', '${exec.id}')" class="btn-danger">
+                            <i class='bx bx-trash'></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderAnnouncements() {
+            const list = document.getElementById('announcementsList');
+            
+            if (allData.announcements.length === 0) {
+                list.innerHTML = '<div class="empty-state"><i class="bx bx-megaphone text-4xl mb-2"></i><p>No announcements yet.</p></div>';
+                return;
+            }
+            
+            // Sort by newest first
+            allData.announcements.sort((a, b) => b.timestamp - a.timestamp);
+            
+            list.innerHTML = allData.announcements.map(ann => `
+                <div class="announcement-card">
+                    ${ann.image ? `<img src="${ann.image}" class="announcement-image">` : ''}
+                    <div class="p-3">
+                        <span class="inline-block bg-[#b22222] text-white text-xs px-2 py-1 rounded-full mb-2">
+                            ${new Date(ann.timestamp).toLocaleDateString()}
+                        </span>
+                        <h3 class="font-semibold text-[#b22222] mb-1">${ann.title}</h3>
+                        ${ann.from ? `<p class="text-xs text-gray-500 mb-2">From: ${ann.from}</p>` : ''}
+                        <p class="text-sm text-gray-600 mb-3 line-clamp-3">${ann.content}</p>
+                        <button onclick="deleteItem('announcements', '${ann.id}')" class="btn-danger w-full">
+                            <i class='bx bx-trash'></i> Delete
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -815,7 +1059,7 @@
                 return;
             }
             
-            // Sort by date
+            // Sort by date (upcoming first)
             allData.events.sort((a, b) => (a.date || 0) - (b.date || 0));
             
             list.innerHTML = allData.events.map(event => `
@@ -891,6 +1135,74 @@
         }
         
         // ============================================
+        // EDIT EXECUTIVE FUNCTIONS
+        // ============================================
+        window.openEditModal = function(id) {
+            const executive = allData.executives.find(exec => exec.id === id);
+            if (!executive) return;
+            
+            document.getElementById('editExecutiveId').value = executive.id;
+            document.getElementById('editExecName').value = executive.name || '';
+            document.getElementById('editExecPosition').value = executive.position || '';
+            document.getElementById('editExecOrder').value = executive.order || '';
+            document.getElementById('editExecBio').value = executive.bio || '';
+            document.getElementById('editPreviewImage').src = executive.photoURL;
+            
+            document.getElementById('editExecutiveModal').classList.add('active');
+        };
+        
+        window.closeEditModal = function() {
+            document.getElementById('editExecutiveModal').classList.remove('active');
+            document.getElementById('editExecPhoto').value = '';
+            document.getElementById('editExecPhotoLabel').classList.remove('has-file');
+        };
+        
+        window.previewEditImage = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editPreviewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+        
+        window.updateExecutive = async function() {
+            const id = document.getElementById('editExecutiveId').value;
+            const name = document.getElementById('editExecName').value.trim();
+            const position = document.getElementById('editExecPosition').value.trim();
+            const order = parseInt(document.getElementById('editExecOrder').value);
+            const bio = document.getElementById('editExecBio').value.trim();
+            const photoFile = document.getElementById('editExecPhoto').files[0];
+            
+            if (!name || !position || !order) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                let photoURL = document.getElementById('editPreviewImage').src;
+                
+                if (photoFile) {
+                    photoURL = await uploadFile(photoFile, 'eke-abiansi/executives', 'image');
+                }
+                
+                await update(ref(db, 'executives/' + id), {
+                    name, position, order,
+                    bio: bio || '',
+                    photoURL,
+                    updatedAt: Date.now()
+                });
+                
+                showToast('Executive updated successfully!');
+                closeEditModal();
+                
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        };
+        
+        // ============================================
         // UTILITY FUNCTIONS
         // ============================================
         function showToast(message, type = 'success') {
@@ -922,32 +1234,17 @@
             }
         };
         
-        async function uploadFile(file, folder) {
+        async function uploadFile(file, folder, resourceType = 'image') {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
             formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
             formData.append('folder', folder);
             
-            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-                method: 'POST',
-                body: formData
-            });
+            let url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/`;
+            url += resourceType === 'video' ? 'video/upload' : 'image/upload';
             
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || 'Upload failed');
-            return data.secure_url;
-        }
-        
-        async function uploadVideo(file, folder) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
-            formData.append('folder', folder);
-            formData.append('resource_type', 'video');
-            
-            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: formData
             });
@@ -974,7 +1271,7 @@
             
             try {
                 const photoURL = photoFile 
-                    ? await uploadFile(photoFile, 'eke-abiansi/executives')
+                    ? await uploadFile(photoFile, 'eke-abiansi/executives', 'image')
                     : `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
                 
                 const newRef = push(ref(db, 'executives'));
@@ -1000,6 +1297,44 @@
             }
         };
         
+        window.addAnnouncement = async function() {
+            const title = document.getElementById('announcementTitle').value.trim();
+            const from = document.getElementById('announcementFrom').value.trim();
+            const content = document.getElementById('announcementContent').value.trim();
+            const imageFile = document.getElementById('announcementImage').files[0];
+            
+            if (!title || !content) {
+                showToast('Please fill in title and content', 'error');
+                return;
+            }
+            
+            try {
+                let imageUrl = null;
+                if (imageFile) {
+                    imageUrl = await uploadFile(imageFile, 'eke-abiansi/announcements', 'image');
+                }
+                
+                const newRef = push(ref(db, 'announcements'));
+                await set(newRef, {
+                    title, from, content,
+                    image: imageUrl,
+                    timestamp: Date.now()
+                });
+                
+                showToast('Announcement created successfully!');
+                
+                // Clear form
+                document.getElementById('announcementTitle').value = '';
+                document.getElementById('announcementFrom').value = '';
+                document.getElementById('announcementContent').value = '';
+                document.getElementById('announcementImage').value = '';
+                document.getElementById('announcementImageLabel').classList.remove('has-file');
+                
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        };
+        
         window.addEvent = async function() {
             const title = document.getElementById('eventTitle').value.trim();
             const description = document.getElementById('eventDescription').value.trim();
@@ -1014,7 +1349,7 @@
             
             try {
                 const date = new Date(dateStr).getTime();
-                const imageUrl = imageFile ? await uploadFile(imageFile, 'eke-abiansi/events') : null;
+                const imageUrl = imageFile ? await uploadFile(imageFile, 'eke-abiansi/events', 'image') : null;
                 
                 const newRef = push(ref(db, 'events'));
                 await set(newRef, {
@@ -1047,7 +1382,7 @@
             }
             
             try {
-                const imageUrl = await uploadFile(file, 'eke-abiansi/papers');
+                const imageUrl = await uploadFile(file, 'eke-abiansi/papers', 'image');
                 
                 const newRef = push(ref(db, 'papers'));
                 await set(newRef, {
@@ -1078,13 +1413,10 @@
             
             try {
                 const isVideo = file.type.startsWith('video/');
-                let fileUrl;
+                const resourceType = isVideo ? 'video' : 'image';
+                const folder = isVideo ? 'eke-abiansi/gallery/videos' : 'eke-abiansi/gallery/images';
                 
-                if (isVideo) {
-                    fileUrl = await uploadVideo(file, 'eke-abiansi/gallery/videos');
-                } else {
-                    fileUrl = await uploadFile(file, 'eke-abiansi/gallery/images');
-                }
+                const fileUrl = await uploadFile(file, folder, resourceType);
                 
                 const newRef = push(ref(db, 'gallery'));
                 await set(newRef, {
