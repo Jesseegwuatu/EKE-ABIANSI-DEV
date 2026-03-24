@@ -267,7 +267,7 @@
             margin-bottom: 1rem;
         }
         
-        /* Edit Modal */
+        /* Edit Executive Modal */
         .edit-modal {
             position: fixed;
             top: 0;
@@ -332,6 +332,46 @@
             margin: 0 auto 1rem;
             display: block;
             border: 3px solid #b22222;
+        }
+        
+        /* Edit Event Modal */
+        .edit-event-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300001;
+        }
+        
+        .edit-event-modal.active {
+            display: flex;
+        }
+        
+        .edit-event-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid #b22222;
+        }
+        
+        .event-edit-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            display: block;
+            border: 2px solid #b22222;
         }
         
         /* Tabs */
@@ -619,6 +659,56 @@
         </div>
     </div>
     
+    <!-- Edit Event Modal -->
+    <div class="edit-event-modal" id="editEventModal">
+        <div class="edit-event-card">
+            <div class="edit-header">
+                <h3>Edit Event</h3>
+                <span class="edit-close" onclick="closeEventEditModal()">&times;</span>
+            </div>
+            
+            <img id="editEventPreviewImage" src="" alt="Preview" class="event-edit-preview">
+            
+            <input type="hidden" id="editEventId">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Event Title *</label>
+                <input type="text" id="editEventTitle" placeholder="e.g., EKE ABIANSI DEVELOPMENT ANNUAL MEETING">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Venue *</label>
+                <input type="text" id="editEventVenue" placeholder="e.g., TRANTER IT INFRASTRUCTURE OFFICE">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Date & Time *</label>
+                <input type="text" id="editEventDate" placeholder="Select date and time" class="edit-datetime-picker">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Description *</label>
+                <textarea id="editEventDescription" rows="3" placeholder="Event description..."></textarea>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">New Image (Optional)</label>
+                <div class="file-input-container">
+                    <input type="file" id="editEventImage" accept="image/*" class="file-input" onchange="previewEditEventImage(this)">
+                    <div class="file-label" id="editEventImageLabel">
+                        <i class='bx bx-image-add'></i>
+                        <span>Choose New Image</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="updateEvent()" class="btn-primary flex-1">Update Event</button>
+                <button onclick="closeEventEditModal()" class="btn-outline flex-1">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Toast Container -->
     <div id="toastContainer"></div>
     
@@ -649,7 +739,7 @@
                 <button class="tab-button" onclick="switchTab('gallery')" id="tabGallery">Gallery</button>
             </div>
             
-            <!-- EXECUTIVES TAB (with Edit buttons) -->
+            <!-- EXECUTIVES TAB -->
             <div id="executivesTab" class="tab-content active">
                 <div class="glass-card p-6 mb-8">
                     <h2 class="section-title">Add New Executive</h2>
@@ -692,7 +782,7 @@
                 </div>
             </div>
             
-            <!-- ANNOUNCEMENTS TAB (New) -->
+            <!-- ANNOUNCEMENTS TAB -->
             <div id="announcementsTab" class="tab-content">
                 <div class="glass-card p-6 mb-8">
                     <h2 class="section-title">Create New Announcement</h2>
@@ -734,7 +824,7 @@
                 </div>
             </div>
             
-            <!-- EVENTS TAB -->
+            <!-- EVENTS TAB (with Edit buttons) -->
             <div id="eventsTab" class="tab-content">
                 <div class="glass-card p-6 mb-8">
                     <h2 class="section-title">Create New Event</h2>
@@ -1071,7 +1161,14 @@
                     <h3 class="font-semibold text-[#b22222] mb-1">${event.title || 'Untitled'}</h3>
                     <p class="text-sm text-gray-600 mb-2">${event.description || ''}</p>
                     <p class="text-xs text-gray-500 mb-3">${event.venue || ''}</p>
-                    <button onclick="deleteItem('events', '${event.id}')" class="btn-danger w-full">Delete</button>
+                    <div class="action-buttons mt-2">
+                        <button onclick="openEventEditModal('${event.id}')" class="btn-success flex-1">
+                            <i class='bx bx-edit'></i> Edit
+                        </button>
+                        <button onclick="deleteItem('events', '${event.id}')" class="btn-danger flex-1">
+                            <i class='bx bx-trash'></i> Delete
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1196,6 +1293,92 @@
                 
                 showToast('Executive updated successfully!');
                 closeEditModal();
+                
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        };
+        
+        // ============================================
+        // EDIT EVENT FUNCTIONS
+        // ============================================
+        window.openEventEditModal = function(id) {
+            const event = allData.events.find(ev => ev.id === id);
+            if (!event) return;
+            
+            document.getElementById('editEventId').value = event.id;
+            document.getElementById('editEventTitle').value = event.title || '';
+            document.getElementById('editEventVenue').value = event.venue || '';
+            document.getElementById('editEventDescription').value = event.description || '';
+            document.getElementById('editEventPreviewImage').src = event.image || '';
+            
+            // Set date in datetime picker
+            if (event.date) {
+                const date = new Date(event.date);
+                const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+                document.getElementById('editEventDate').value = formattedDate;
+            } else {
+                document.getElementById('editEventDate').value = '';
+            }
+            
+            document.getElementById('editEventModal').classList.add('active');
+            
+            // Reinitialize flatpickr for the edit modal
+            flatpickr("#editEventDate", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                minDate: "today"
+            });
+        };
+        
+        window.closeEventEditModal = function() {
+            document.getElementById('editEventModal').classList.remove('active');
+            document.getElementById('editEventImage').value = '';
+            document.getElementById('editEventImageLabel').classList.remove('has-file');
+        };
+        
+        window.previewEditEventImage = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editEventPreviewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+        
+        window.updateEvent = async function() {
+            const id = document.getElementById('editEventId').value;
+            const title = document.getElementById('editEventTitle').value.trim();
+            const description = document.getElementById('editEventDescription').value.trim();
+            const venue = document.getElementById('editEventVenue').value.trim();
+            const dateStr = document.getElementById('editEventDate').value;
+            const imageFile = document.getElementById('editEventImage').files[0];
+            
+            if (!title || !description || !venue || !dateStr) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                const date = new Date(dateStr).getTime();
+                let imageUrl = document.getElementById('editEventPreviewImage').src;
+                
+                if (imageFile) {
+                    imageUrl = await uploadFile(imageFile, 'eke-abiansi/events', 'image');
+                } else if (imageUrl === '' || imageUrl === '#') {
+                    imageUrl = null;
+                }
+                
+                await update(ref(db, 'events/' + id), {
+                    title, description, venue, date,
+                    image: imageUrl,
+                    updatedAt: Date.now()
+                });
+                
+                showToast('Event updated successfully!');
+                closeEventEditModal();
                 
             } catch (error) {
                 showToast('Error: ' + error.message, 'error');
