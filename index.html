@@ -1212,9 +1212,6 @@ We are determined to raise capital to help address the myriad of socio-economic 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // GNews API Key
-        const GNEWS_API_KEY = 'da3d7030697818525587700d8da60a52';
-        
         // DOM Elements
         const loader = document.getElementById('loader');
         const executivesGrid = document.getElementById('executivesGrid');
@@ -1350,36 +1347,40 @@ We are determined to raise capital to help address the myriad of socio-economic 
         });
         
         // ============================================
-        // LOAD NEWS (Static)
-        // ============================================
-        async function loadNews() {
-            try {
-                const response = await fetch(`https://gnews.io/api/v4/top-headlines?country=ng&lang=en&max=12&apikey=${GNEWS_API_KEY}`);
-                const data = await response.json();
-                
-                if (data.articles && data.articles.length > 0) {
-                    newsFeed.innerHTML = data.articles.map(article => `
-                        <div class="news-card" data-aos="fade-up">
-                            <div class="news-image">
-                                <img src="${article.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'}" alt="${article.title}">
-                            </div>
-                            <div class="news-content">
-                                <h3 class="news-title">${article.title}</h3>
-                                <p class="news-description">${article.description || ''}</p>
-                                <div class="news-meta">
-                                    <span class="news-source">${article.source.name}</span>
-                                    <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
-                                </div>
-                                <a href="${article.url}" target="_blank" class="text-primary hover:underline text-sm mt-4 inline-block">Read More →</a>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Error loading news:', error);
-            }
-        }
-        loadNews();
+// LOAD NEWS (via Vercel proxy)
+// ============================================
+async function loadNews() {
+  try {
+    // Call our own API endpoint instead of GNews directly
+    const response = await fetch('/api/news');
+    const data = await response.json();
+
+    if (data.articles && data.articles.length > 0) {
+      newsFeed.innerHTML = data.articles.map(article => `
+        <div class="news-card" data-aos="fade-up">
+          <div class="news-image">
+            <img src="${article.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'}" alt="${article.title}">
+          </div>
+          <div class="news-content">
+            <h3 class="news-title">${article.title}</h3>
+            <p class="news-description">${article.description || ''}</p>
+            <div class="news-meta">
+              <span class="news-source">${article.source.name}</span>
+              <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
+            </div>
+            <a href="${article.url}" target="_blank" class="text-primary hover:underline text-sm mt-4 inline-block">Read More →</a>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      newsFeed.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No news available at the moment.</div>';
+    }
+  } catch (error) {
+    console.error('Error loading news:', error);
+    newsFeed.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Failed to load news.</div>';
+  }
+}
+loadNews();
         
         // ============================================
         // LOAD EVENTS - NEWEST FIRST
